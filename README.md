@@ -36,8 +36,8 @@ Este projeto, chamado "aplicacao-de-tema-livre-para-sistema-Linux-que-usa-elemen
 
 2. **Quartus**
    - Abre o quartus 17.1(importante!) e abra o projeto pcihello.v ou aperte diretamente no arquivo.qar 
-   -Mais informações sobre mapeamento estão no arquivo "[TUTORIAL] Mapeamento.pdf"
-   - Se quiser adicionar o display lcd, vá no mapeamento e leia o manual da placa para dicionar corretamente.
+   - Mais informações sobre mapeamento estão no arquivo "[TUTORIAL] Mapeamento.pdf"
+   - Se quiser adicionar o display lcd, leia o manual da placa e vá no mapeamento para adicionar corretamente.
 
 3. **Execução das Aplicações:**
    - Compile o código e passe para a placa suas alterações, após isso, deve-se entrar no linux da placa e continuar as alterações de código lá.
