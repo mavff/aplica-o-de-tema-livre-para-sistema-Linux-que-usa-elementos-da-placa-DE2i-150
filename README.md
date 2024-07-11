@@ -14,16 +14,16 @@ Este projeto, chamado "aplicacao-de-tema-livre-para-sistema-Linux-que-usa-elemen
 
 ## Conteúdo do Projeto
 
-- **drivers/**
+- **drivers**
   - Contém os drivers desenvolvidos para os periféricos.
   
 - **C**
   - Código C/c++ utilizado na integração com os drivers e para o controle direto dos periféricos.
 
-- **application/**
+- **application**
   - Exemplos de aplicações que utilizam os drivers e o código em C/C++ desenvolvido.
   
-- **documentation/**
+- **documentation**
   - Documentação detalhada sobre o desenvolvimento dos drivers, o mapeamento dos periféricos e a integração C/C++ com Assembly.
 
 ## Como Utilizar
