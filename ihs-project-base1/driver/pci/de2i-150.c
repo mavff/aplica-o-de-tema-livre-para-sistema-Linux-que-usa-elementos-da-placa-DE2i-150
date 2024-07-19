@@ -125,7 +125,7 @@ static int __init my_init(void)
 	printk("my_driver: device number %d was registered!\n", MAJOR(my_device_nbr));
 
 	/* 2. create class : appears at /sys/class */
-	if ((my_class = class_create(DRIVER_CLASS)) == NULL) {
+	if ((my_class = class_create(THIS_MODULE, DRIVER_CLASS)) == NULL) {
 		printk("my_driver: device class count not be created!\n");
 		goto ClassError;
 	}
@@ -298,8 +298,8 @@ static int __init my_pci_probe(struct pci_dev *dev, const struct pci_device_id *
 	bar0_mmio = pci_iomap(dev, 0, bar_len);
 
 	/* initialize a default peripheral read and write pointer */
-	write_pointer = bar0_mmio + 0xC000; //TODO: update offset
-	read_pointer  = bar0_mmio + 0xC080; //TODO: update offset
+	write_pointer = bar0_mmio + 0xC020; //TODO: update offset
+	read_pointer  = bar0_mmio + 0xC0A0; //TODO: update offset
 
 	return 0;
 }
