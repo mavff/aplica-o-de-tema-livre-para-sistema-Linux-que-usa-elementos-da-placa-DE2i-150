@@ -31,10 +31,27 @@ def main():
     retval = os.write(fd, data.to_bytes(4, 'little'))
     print("wrote %d bytes"%retval)
 
+    # data to write
+    data = 0x0F;
+    ioctl(fd, WR_RED_LEDS)
+    retval = os.write(fd, data.to_bytes(4, 'little'))
+    print("wrote %d bytes"%retval)
+    
+    # data to write
+    data = 0xF0;
+    ioctl(fd, WR_GREEN_LEDS)
+    retval = os.write(fd, data.to_bytes(4, 'little'))
+    print("wrote %d bytes"%retval)
+
+
     ioctl(fd, RD_PBUTTONS)
     red = os.read(fd, 4); # read 4 bytes and store in red var
     print("red 0x%X"%int.from_bytes(red, 'little'))
 
+    ioctl(fd, RD_SWITCHES)
+    switches = os.read(fd, 4); # read 4 bytes and store in red var
+    print("red 0x%X"%int.from_bytes(switches, 'little'))
+    
     os.close(fd)
 
 if __name__ == '__main__':
