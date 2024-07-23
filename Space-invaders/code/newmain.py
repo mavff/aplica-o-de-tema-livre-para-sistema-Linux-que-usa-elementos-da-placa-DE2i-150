@@ -5,6 +5,7 @@ import obstacle
 from alien import Alien, Extra
 from random import choice, randint
 from laser import Laser
+import pygame
 
 # Definições de valores dos displays de 7 segmentos
 HEX_0 = 0xC0
@@ -228,10 +229,11 @@ class Game:
                     laser.kill()
                     self.explosion_sound.play()
 
-                # extra collision
-                if pygame.sprite.spritecollide(laser, self.extra, True):
-                    self.score += 500
-                    laser.kill()
+                # extra collisions
+                if self.extra.sprite:
+                    if pygame.sprite.spritecollide(laser, self.extra, True):
+                        self.score += 500
+                        laser.kill()
 
         # alien lasers 
         if self.alien_lasers:
@@ -240,26 +242,21 @@ class Game:
                 if pygame.sprite.spritecollide(laser, self.blocks, True):
                     laser.kill()
 
+                # player collisions
                 if pygame.sprite.spritecollide(laser, self.player, False):
                     laser.kill()
                     self.lives -= 1
-                    self.update_lives_display()
                     if self.lives <= 0:
                         pygame.quit()
                         sys.exit()
 
-        # aliens
+        # aliens 
         if self.aliens:
             for alien in self.aliens:
                 pygame.sprite.spritecollide(alien, self.blocks, True)
-
                 if pygame.sprite.spritecollide(alien, self.player, False):
                     pygame.quit()
                     sys.exit()
-
-    def update_lives_display(self):
-        # Atualiza o display de 7 segmentos com o número de vidas
-        self.io.put_DP(0, str(self.lives))
 
     def display_lives(self):
         for live in range(self.lives - 1):
@@ -277,16 +274,29 @@ class Game:
             victory_rect = victory_surf.get_rect(center=(screen_width / 2, screen_height / 2))
             screen.blit(victory_surf, victory_rect)
 
+    def update_display(self):
+        # Atualiza o display de 7 segmentos com a pontuação e a vida
+        score_str = str(self.score).zfill(4)  # Certifica-se de que a pontuação tenha 4 dígitos
+        lives_str = str(self.lives).zfill(2)  # Certifica-se de que as vidas tenham 2 dígitos
+
+        self.io.put_DP(0, score_str)  # Atualiza o display direito com a pontuação
+        self.io.put_DP(1, lives_str)  # Atualiza o display esquerdo com as vidas
+    def update_led_score(self):
+        # Calcular o número de LEDs a serem acesos com base na pontuação
+        num_leds_to_light = self.score // 400
+        array = []
+        # Atualizar o estado dos LEDs
+        for i in range(num_leds_to_light):
+            array.append(i)
+            self.io.put_ar_LD(array)  # Substitua por sua função específica para acender LEDs
     def run(self):
         self.player.update()
+        self.aliens.update(self.alien_direction)
         self.alien_lasers.update()
         self.extra.update()
-
-        self.aliens.update(self.alien_direction)
-        self.alien_position_checker()
-        self.extra_alien_timer()
         self.collision_checks()
-
+        self.extra_alien_timer()
+        self.alien_position_checker()
         self.player.sprite.lasers.draw(screen)
         self.player.draw(screen)
         self.blocks.draw(screen)
@@ -296,24 +306,9 @@ class Game:
         self.display_lives()
         self.display_score()
         self.victory_message()
-
-        # Leitura dos botões e switches
-        self.read_controls()
-
-    def read_controls(self):
-        # Movimentação do jogador
-        move_left = self.io.get_PB(0)  # Botão 0
-        move_right = self.io.get_PB(1)  # Botão 1
-
-        if move_left:
-            self.player.sprite.move_left()
-        if move_right:
-            self.player.sprite.move_right()
-
-        # Tiro do jogador
-        shoot = self.io.get_PB(2)  # Botão 2
-        if shoot:
-            self.player.sprite.shoot()
+        self.update_display()
+        self.update_led_score()
+        
 
 if __name__ == '__main__':
     pygame.init()
@@ -322,7 +317,6 @@ if __name__ == '__main__':
     screen = pygame.display.set_mode((screen_width, screen_height))
     clock = pygame.time.Clock()
     game = Game()
-    crt = CRT()
 
     ALIENLASER = pygame.USEREVENT + 1
     pygame.time.set_timer(ALIENLASER, 800)
@@ -335,9 +329,20 @@ if __name__ == '__main__':
             if event.type == ALIENLASER:
                 game.alien_shoot()
 
+        # Leitura dos botões da placa
+        if game.io.get_PB(1):  
+            game.player.sprite.move_left()
+        if game.io.get_PB(0):  
+            game.player.sprite.move_right()
+        if not game.io.get_PB(3): 
+            game.player.sprite.shoot()
+        if game.io.get_SW(0): 
+            game.__init__()
+
+
         screen.fill((30, 30, 30))
+        game.player.sprite.recharge()
         game.run()
-        # crt.draw()
 
         pygame.display.flip()
         clock.tick(60)
