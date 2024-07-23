@@ -4,7 +4,9 @@ import obstacle
 from alien import Alien, Extra
 from random import choice, randint
 from laser import Laser
- 
+
+
+
 class Game:
 	def __init__(self):
 		# Player setup
@@ -152,6 +154,12 @@ class Game:
 		score_surf = self.font.render(f'score: {self.score}',False,'white')
 		score_rect = score_surf.get_rect(topleft = (10,-10))
 		screen.blit(score_surf,score_rect)
+		#########################
+		numero=str(game.score)
+        if game.score >= 0:
+        	numero=numero.zfill(4)
+        Integration.put_DP(0,numero)
+		###############################
 
 	def victory_message(self):
 		if not self.aliens.sprites():
