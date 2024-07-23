@@ -1,5 +1,10 @@
 import pygame 
 from laser import Laser
+###############
+from integracao import *
+import os, sys
+from fcntl import ioctl
+###############
 
 class Player(pygame.sprite.Sprite):
 	def __init__(self,pos,constraint,speed):
@@ -17,9 +22,19 @@ class Player(pygame.sprite.Sprite):
 		self.laser_sound = pygame.mixer.Sound('../audio/laser.wav')
 		self.laser_sound.set_volume(0.5)
 
-	def get_input(self):
+	def get_input(self):#aqui vou alterar de onde vem o input de dados de keyboard para buttons
+		####################
+		if Integration.get_PB(3)==0 and game.game_over == False:
+            		game.move_left()
+        	if Integration.get_PB(2)==0 and game.game_over == False:
+            		game.move_right()
+		if Integration.get_PB(0)==0 and game.game_over == False:
+			self.shoot_laser()
+			self.ready = False
+			self.laser_time = pygame.time.get_ticks()
+			self.laser_sound.play()
+		###################
 		keys = pygame.key.get_pressed()
-
 		if keys[pygame.K_RIGHT]:
 			self.rect.x += self.speed
 		elif keys[pygame.K_LEFT]:
