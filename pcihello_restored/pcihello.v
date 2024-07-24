@@ -91,9 +91,9 @@ inout 		          		FAN_CTRL;
 wire [31:0] hexbus;
 wire [31:0] switches;
 wire [31:0] hex_dis;
-wire [3:0] buttons;
-wire [17:0] led_red;
-wire [7:0] led_green;
+	wire [31:0] buttons;
+	wire [31:0] led_red;
+	wire [31:0] led_green;
 
 
 //=======================================================
