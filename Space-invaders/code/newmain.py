@@ -223,13 +223,7 @@ if __name__ == '__main__':
             if event.type == ALIENLASER:
                 game.alien_shoot()
 
-        # Leitura dos botões da placa
-        if game.io.get_PB(1):  
-            game.player.sprite.move_left()
-        if game.io.get_PB(0):  
-            game.player.sprite.move_right()
-        if not game.io.get_PB(3): 
-            game.player.sprite.shoot()
+        
         if game.io.get_SW(0): 
             game.__init__()
 
