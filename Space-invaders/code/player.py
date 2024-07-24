@@ -1,11 +1,8 @@
 import pygame 
 from laser import Laser
-###############
-from integracao import *
-import os, sys
 from fcntl import ioctl
-###############
-
+from integracao import *
+Integration=IO()
 class Player(pygame.sprite.Sprite):
 	def __init__(self,pos,constraint,speed):
 		super().__init__()
@@ -21,29 +18,16 @@ class Player(pygame.sprite.Sprite):
 
 		self.laser_sound = pygame.mixer.Sound('../audio/laser.wav')
 		self.laser_sound.set_volume(0.5)
-
-	def get_input(self):#aqui vou alterar de onde vem o input de dados de keyboard para buttons
-		####################
-		if Integration.get_PB(3)==0 and game.game_over == False:
-            		game.move_left()
-        	if Integration.get_PB(2)==0 and game.game_over == False:
-            		game.move_right()
-		if Integration.get_PB(0)==0 and game.game_over == False:
-			self.shoot_laser()
-			self.ready = False
-			self.laser_time = pygame.time.get_ticks()
-			self.laser_sound.play()
-		###################
-		keys = pygame.key.get_pressed()
-		if keys[pygame.K_RIGHT]:
-			self.rect.x += self.speed
-		elif keys[pygame.K_LEFT]:
-			self.rect.x -= self.speed
-
-		if keys[pygame.K_SPACE] and self.ready:
-			self.shoot_laser()
-			self.ready = False
-			self.laser_time = pygame.time.get_ticks()
+		
+	def get_input(self):
+        	if Integration.get_PB(0)==0 and game.game_over == False:
+            		self.move_right()
+        	if Integration.get_PB(1)==0 and game.game_over == False:
+            		self.move_left()
+        	if Integration.get_PB(3)==0 and game.game_over == False and self.ready:
+            		self.shoot()
+            		self.ready = False
+            		self.laser_time = pygame.time.get_ticks()
 			self.laser_sound.play()
 
 	def recharge(self):
@@ -57,12 +41,21 @@ class Player(pygame.sprite.Sprite):
 			self.rect.left = 0
 		if self.rect.right >= self.max_x_constraint:
 			self.rect.right = self.max_x_constraint
+	def move_left(self):
+        	self.rect.x += self.speed
+        	self.constraint()
 
+    	def move_right(self):
+        	self.rect.x -= self.speed
+        	self.constraint()
 	def shoot_laser(self):
-		self.lasers.add(Laser(self.rect.center,-8,self.rect.bottom))
+		if self.ready:
+            		laser = Laser(self.rect.center, -8, self.rect.bottom)
+           	 	self.lasers.add(laser)
+            		self.ready = False
+            		self.laser_time = pygame.time.get_ticks()
 
 	def update(self):
 		self.get_input()
-		self.constraint()
 		self.recharge()
 		self.lasers.update()
