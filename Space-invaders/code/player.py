@@ -2,7 +2,7 @@ import pygame
 from laser import Laser
 from fcntl import ioctl
 from integracao import *
-Integration=IO()
+
 class Player(pygame.sprite.Sprite):
 	def __init__(self,pos,constraint,speed):
 		super().__init__()
@@ -20,6 +20,7 @@ class Player(pygame.sprite.Sprite):
 		self.laser_sound.set_volume(0.5)
 		
 	def get_input(self):
+		Integration=IO()
         	if Integration.get_PB(0)==0 and game.game_over == False:
             		self.move_right()
         	if Integration.get_PB(1)==0 and game.game_over == False:
